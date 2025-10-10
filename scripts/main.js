@@ -12,3 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
     loadComponent("header", "components/header.html");
     loadComponent("footer", "components/footer.html");
 });
+
+function toggleUserMenu() {
+  const dropdown = document.getElementById("userDropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+// Fermer le menu si on clique ailleurs
+document.addEventListener("click", (event) => {
+  const userMenu = document.querySelector(".user-menu");
+  if (!userMenu.contains(event.target)) {
+    document.getElementById("userDropdown").style.display = "none";
+  }
+});
