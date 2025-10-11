@@ -8,9 +8,9 @@ function loadComponent(id, filePath) {
 
 // Charger les composants
 document.addEventListener("DOMContentLoaded", () => {
-    loadComponent("sidebar", "components/sidebar.html");
-    loadComponent("header", "components/header.html");
-    loadComponent("footer", "components/footer.html");
+    loadComponent("sidebar", "/components/sidebar.html");
+    loadComponent("header", "/components/header.html");
+    loadComponent("footer", "/components/footer.html");
 });
 
 function toggleUserMenu() {

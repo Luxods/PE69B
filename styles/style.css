@@ -10,101 +10,12 @@ body {
     display: flex;
 }
 
-.sidebar {
-    width: 220px;
-    background: linear-gradient(180deg, #3a7bd5, #3a6073);
-    color: white;
-    padding: 20px;
-    position: fixed;
-    top: 0; left: 0; bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.sidebar h2 {
-    text-align: center;
-    font-weight: 700;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar li {
-    margin: 15px 0;
-}
-
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    transition: opacity 0.2s;
-}
-
-.sidebar a:hover {
-    opacity: 0.8;
-}
-
 main {
-    margin-left: 240px;
+    margin-left: 210px;
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #004aad;
-  color: white;
-  padding: 0.8rem 1.2rem;
-  position: relative;
-}
-
-.user-menu {
-  position: relative;
-  padding-right: 20px;
-}
-
-.user-icon img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.user-icon img:hover {
-  transform: scale(1.05);
-}
-
-.user-dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 45px;
-  background-color: white;
-  color: #333;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
-  z-index: 100;
-}
-
-.user-dropdown a {
-  display: block;
-  padding: 10px 15px;
-  text-decoration: none;
-  color: #333;
-  transition: background-color 0.2s;
-}
-
-.user-dropdown a:hover {
-  background-color: #f0f0f0;
 }
 
 
@@ -119,36 +30,7 @@ main {
     background-color: #eceff1;
 }
 
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 400px;
-    margin: auto;
-}
 
-.contact-form input,
-.contact-form textarea {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-}
-
-.contact-form button {
-    background-color: #3a7bd5;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.contact-form button:hover {
-    background-color: #2a5fa5;
-}
 
 .chapitres {
   display: flex;
