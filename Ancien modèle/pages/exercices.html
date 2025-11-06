@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercices - Maths Terminale</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <link rel="stylesheet" href="styles/layout.css" />
+</head>
+<body>
+  <div id="sidebar"></div>
+  <div class="main-content">
+    <div id="header"></div>
+
+    <div class="content">
+      <h1>Exercices par Chapitre</h1>
+      <div class="chapitres">
+        <div class="chapitre" onclick="ouvrirChapitre('fonctions')">
+          <h2>Chapitre 1 : Fonctions</h2>
+          <p>Étudier les fonctions polynomiales</p>
+        </div>
+        <div class="chapitre" onclick="ouvrirChapitre('probabilites')">
+          <h2>Chapitre 2 : Probabilités</h2>
+          <p>Lois, variables aléatoires et espérance.</p>
+        </div>
+        <div class="chapitre" onclick="ouvrirChapitre('geometrie')">
+          <h2>Chapitre 3 : Géométrie dans l’espace</h2>
+          <p>Repérage, droites et plans dans l’espace.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="footer"></div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/exercices.js"></script>
+</body>
+</html>
