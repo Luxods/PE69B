@@ -58,9 +58,12 @@ export const getDefaultContent = (type) => {
     case 'sequence':
       return {
         type: 'explicit',
-        formula: 'U_n = a*n + b',
-        u0: 'a',
-        relation: ''
+        formula: 'U_n = a*n + b',  // Seulement pour type explicit
+        u0: '1',
+        relation: '',              // Seulement pour type recursive
+        reason: '',                // Seulement pour arithmetic/geometric
+        showTerms: true,
+        termsCount: 5
       };
     case 'complex_plane':
       return {

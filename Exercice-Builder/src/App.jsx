@@ -8,7 +8,7 @@ import ExercisePreview from './components/ExercisePreview';
 import Sidebar from './components/Sidebar';
 import { useExercises } from './hooks/useExercises';
 import { useVariables } from './hooks/useVariables';
-import './styles/style.css';
+
 
 const App = () => {
   const [previewMode, setPreviewMode] = useState(false);

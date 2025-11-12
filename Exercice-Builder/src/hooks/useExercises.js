@@ -11,61 +11,87 @@ export const useExercises = () => {
     elements: []
   });
 
-  const addElement = (type) => {
-    const newElement = {
-      id: Date.now(),
-      type,
-      content: getDefaultContent(type)
-    };
-    setCurrentExercise({
-      ...currentExercise,
-      elements: [...currentExercise.elements, newElement]
+  // ... autres fonctions
+
+  const exportJSON = (includeAnswers = true, prettify = true) => {
+    const dataToExport = exercises.map(ex => {
+      if (!includeAnswers) {
+        // Version sans réponses (pour les élèves)
+        return {
+          ...ex,
+          elements: ex.elements.map(el => {
+            if (el.type === 'question') {
+              const { answer, lowerBound, upperBound, explanation, ...rest } = el.content;
+              return { ...el, content: rest };
+            }
+            if (el.type === 'mcq') {
+              return {
+                ...el,
+                content: {
+                  ...el.content,
+                  options: el.content.options.map(opt => ({
+                    text: opt.text,
+                    correct: false // Masquer les bonnes réponses
+                  })),
+                  explanation: undefined
+                }
+              };
+            }
+            return el;
+          })
+        };
+      }
+      return ex;
     });
-  };
 
-  const updateElement = (id, content) => {
-    setCurrentExercise({
-      ...currentExercise,
-      elements: currentExercise.elements.map(el => 
-        el.id === id ? { ...el, content } : el
-      )
-    });
-  };
-
-  const deleteElement = (id) => {
-    setCurrentExercise({
-      ...currentExercise,
-      elements: currentExercise.elements.filter(el => el.id !== id)
-    });
-  };
-
-  const saveExercise = () => {
-    if (currentExercise.title && currentExercise.elements.length > 0) {
-      setExercises([...exercises, { ...currentExercise, id: Date.now() }]);
-      setCurrentExercise({
-        title: '',
-        difficulty: 'Facile',
-        chapter: 'Analyse',
-        variables: [],
-        elements: []
-      });
-      alert('✅ Exercice sauvegardé !');
-      return true;
-    } else {
-      alert('⚠️ Veuillez ajouter un titre et au moins un élément');
-      return false;
-    }
-  };
-
-  const exportJSON = () => {
-    const dataStr = JSON.stringify(exercises, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const jsonString = prettify 
+      ? JSON.stringify(dataToExport, null, 2)
+      : JSON.stringify(dataToExport);
+      
+    const dataBlob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'exercices-terminale.json';
+    
+    const filename = includeAnswers 
+      ? 'exercices-avec-corrections.json'
+      : 'exercices-eleves.json';
+    
+    link.download = filename;
     link.click();
-    alert('📥 Exercices exportés en JSON !');
+    
+    alert(`📥 Exercices exportés ${includeAnswers ? 'avec' : 'sans'} les réponses !`);
+  };
+
+  const importJSON = (file) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        
+        // Validation basique
+        if (!Array.isArray(imported)) {
+          throw new Error('Format invalide');
+        }
+        
+        // Vérifier si les exercices ont des réponses
+        const hasAnswers = imported.some(ex => 
+          ex.elements?.some(el => 
+            (el.type === 'question' && el.content?.answer) ||
+            (el.type === 'mcq' && el.content?.options?.some(o => o.correct))
+          )
+        );
+        
+        setExercises(imported);
+        
+        alert(`✅ ${imported.length} exercice(s) importé(s) ${hasAnswers ? 'avec' : 'sans'} corrections !`);
+      } catch (error) {
+        alert('❌ Erreur lors de l\'import : ' + error.message);
+      }
+    };
+    
+    reader.readAsText(file);
   };
 
   return {
@@ -76,6 +102,7 @@ export const useExercises = () => {
     updateElement,
     deleteElement,
     saveExercise,
-    exportJSON
+    exportJSON,
+    importJSON
   };
 };
