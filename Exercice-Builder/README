@@ -6,7 +6,7 @@ Les utilisateurs peuvent se connecter, suivre leur progression, et débloquer de
 🚀 Installation et exécution locale
 1. Cloner le dépôt
 git clone https://github.com/Luxods/PE69B.git
-cd ton-projet
+cd Exercice-Builder
 
 2. Installer les dépendances
 npm install
