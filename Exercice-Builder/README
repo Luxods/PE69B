@@ -1,0 +1,62 @@
+📘 Projet — Application d’apprentissage de mathématiques
+
+Une application web interactive d’exercices de mathématiques, développée avec React + Vite.
+Les utilisateurs peuvent se connecter, suivre leur progression, et débloquer des activités au fil de leur apprentissage.
+
+🚀 Installation et exécution locale
+1. Cloner le dépôt
+git clone https://github.com/Luxods/PE69B.git
+cd ton-projet
+
+2. Installer les dépendances
+npm install
+
+3. Lancer le serveur de développement
+npm run dev
+
+
+Le projet sera accessible à l’adresse :
+👉 http://localhost:5173
+
+
+
+
+Format des Exercices .json 
+
+👉disponibles dans /data
+
+{
+    "id": ,
+    "title": "",
+    "chapter": "",
+    "difficulty": "",
+    "variables": [
+      {
+        "id": ,
+        "name": "",
+        "type": "",
+        "min": ,
+        "max": 
+      }
+    ],
+    "elements": [
+      {
+        "id": ,
+        "type": "",
+        "content": {
+          "text": ""
+        }
+      },
+      {
+        "id": ,
+        "type": "",
+        "content": {
+          "expression": "",
+          "xMin": ,
+          "xMax": ,
+          "yMin": ,
+          "yMax": 
+        }
+      }
+    ]
+  }

@@ -1,0 +1,7 @@
+But : Contient tous les composants React permettant à l’utilisateur ou au créateur d’exercices de modifier le contenu.
+
+Exemple de composants :
+FunctionEditor.jsx	-> Permet de créer ou modifier une fonction mathématique.
+EquationEditor.jsx	-> Permet de saisir ou modifier une équation.
+TextEditor.jsx	-> Permet de saisir ou modifier du texte enrichi.
+GraphEditor.jsx	-> Permet de configurer un graphique (bornes, expression, options).

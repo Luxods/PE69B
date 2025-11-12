@@ -1,0 +1,7 @@
+But : Contient tous les composants React qui affichent des contenus, graphiques ou textes, dans un exercice.
+
+Exemple de composants :
+GraphRenderer.jsx	-> Affiche un graphique basé sur une expression mathématique, avec axes, grille et courbe.
+FunctionRenderer.jsx	-> Affiche une fonction ou un calcul avec ses résultats.
+EquationRenderer.jsx	-> Affiche une équation ou une formule mathématique stylisée.
+TextRenderer.jsx	-> Affiche du texte enrichi (consignes, explications, résultats).
