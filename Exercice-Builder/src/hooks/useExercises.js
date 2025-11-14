@@ -11,7 +11,52 @@ export const useExercises = () => {
     elements: []
   });
 
-  // ... autres fonctions
+  const addElement = (type) => {
+    const newElement = {
+      id: Date.now(),
+      type,
+      content: getDefaultContent(type)
+    };
+    setCurrentExercise({
+      ...currentExercise,
+      elements: [...currentExercise.elements, newElement]
+    });
+  };
+
+  const updateElement = (id, content) => {
+    setCurrentExercise({
+      ...currentExercise,
+      elements: currentExercise.elements.map(el => 
+        el.id === id ? { ...el, content } : el
+      )
+    });
+  };
+
+
+  const deleteElement = (id) => {
+    setCurrentExercise({
+      ...currentExercise,
+      elements: currentExercise.elements.filter(el => el.id !== id)
+    });
+  };
+  
+  const saveExercise = () => {
+    if (currentExercise.title && currentExercise.elements.length > 0) {
+      setExercises([...exercises, { ...currentExercise, id: Date.now() }]);
+      setCurrentExercise({
+        title: '',
+        difficulty: 'Facile',
+        chapter: 'Analyse',
+        variables: [],
+        elements: []
+      });
+      alert('✅ Exercice sauvegardé !');
+      return true;
+    } else {
+      alert('⚠️ Veuillez ajouter un titre et au moins un élément');
+      return false;
+    }
+  };
 
   const exportJSON = (includeAnswers = true, prettify = true) => {
     const dataToExport = exercises.map(ex => {

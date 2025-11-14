@@ -13,15 +13,45 @@ const GraphEditor = ({ content, onUpdate }) => {
       />
       <div className="grid grid-cols-4 gap-1">
         {['xMin', 'xMax', 'yMin', 'yMax'].map(field => (
-          <input
-            key={field}
-            type="number"
-            placeholder={field}
-            className="p-1 border rounded text-sm"
-            value={content[field]}
-            onChange={(e) => onUpdate({ ...content, [field]: parseFloat(e.target.value) })}
-          />
+          <div key={field}>
+            <label className="text-xs text-gray-600">
+              {field.replace(/([A-Z])/g, ' $1').trim()}
+            </label>
+            <input
+              type="number"
+              step="any"  // Permet les décimales
+              className="w-full p-1 border rounded text-sm"
+              value={content[field] ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                onUpdate({ 
+                  ...content, 
+                  [field]: value === '' ? '' : parseFloat(value) 
+                });
+              }}
+              placeholder={field === 'xMin' || field === 'yMin' ? '-10' : '10'}
+            />
+          </div>
         ))}
+      </div>
+
+      <div className="flex gap-3">
+        <label className="flex items-center gap-1 text-xs">
+          <input
+            type="checkbox"
+            checked={content.showGrid !== false}
+            onChange={(e) => onUpdate({ ...content, showGrid: e.target.checked })}
+          />
+          Afficher grille
+        </label>
+        <label className="flex items-center gap-1 text-xs">
+          <input
+            type="checkbox"
+            checked={content.showAxes !== false}
+            onChange={(e) => onUpdate({ ...content, showAxes: e.target.checked })}
+          />
+          Afficher axes
+        </label>
       </div>
     </div>
   );

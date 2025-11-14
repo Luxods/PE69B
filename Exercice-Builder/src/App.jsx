@@ -61,6 +61,7 @@ const App = () => {
                 
                 <ElementList
                   currentExercise={currentExercise}
+                  setCurrentExercise={setCurrentExercise}
                   updateElement={updateElement}
                   deleteElement={deleteElement}
                   addElement={addElement}

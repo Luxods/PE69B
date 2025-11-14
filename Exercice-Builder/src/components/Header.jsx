@@ -7,7 +7,7 @@ const Header = ({ previewMode, setPreviewMode, hasVariables, onRegenerate }) => 
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-blue-900 mb-2">
-            🎓 Moteur d'Exercices - Terminale
+            🎓 Moteur d'Exercices - NovLearn
           </h1>
           <p className="text-gray-600">
             Créez des exercices avec des variables aléatoires pour un contenu illimité !

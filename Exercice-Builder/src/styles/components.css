@@ -171,3 +171,80 @@ th {
   margin: 0.25rem;
   font-family: 'Times New Roman', serif;
 }
+
+
+/* ===== DRAG & DROP SIMPLE ===== */
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-move:hover {
+  cursor: grab;
+}
+
+.cursor-move:active {
+  cursor: grabbing;
+}
+
+/* Animation douce pour le hover */
+button[draggable="true"]:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* Indicateur visuel lors du drag over */
+.drag-over {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+  transform: scale(1.02);
+}
+
+/* Transition pour les éléments */
+.element-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== DÉSACTIVER LE RESIZE DES TEXTAREAS ===== */
+textarea {
+  resize: none !important;
+}
+
+/* ===== DRAG & DROP ===== */
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-move:hover {
+  cursor: grab;
+}
+
+.cursor-move:active {
+  cursor: grabbing;
+}
+
+/* Empêcher la sélection de texte pendant le drag */
+.select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Transition douce */
+.transition-all {
+  transition: all 0.2s ease;
+}
+
+/* Style pour l'élément en cours de glissement */
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+/* Translation pour l'indicateur de position */
+.translate-y-1 {
+  transform: translateY(0.25rem);
+}
