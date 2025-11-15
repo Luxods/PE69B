@@ -43,21 +43,21 @@ const ComplexPlaneEditor = ({ content, onUpdate }) => {
                 onChange={(e) => updatePoint(i, 'name', e.target.value)}
                 placeholder="z1"
               />
-              <span className="text-sm">=</span>
+              <span className="text-sm px-2">=</span>
               <input
                 className="flex-1 p-1 border rounded text-sm"
                 value={pt.re}
                 onChange={(e) => updatePoint(i, 're', e.target.value)}
                 placeholder="Partie réelle"
               />
-              <span className="text-sm">+</span>
+              <span className="text-sm px-2">+</span>
               <input
                 className="flex-1 p-1 border rounded text-sm"
                 value={pt.im}
                 onChange={(e) => updatePoint(i, 'im', e.target.value)}
                 placeholder="Partie imaginaire"
               />
-              <span className="text-sm">i</span>
+              <span className="text-sm px-2">i</span>
               {content.points.length > 1 && (
                 <button
                   onClick={() => removePoint(i)}

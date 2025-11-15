@@ -96,6 +96,8 @@ th {
   text-align: center;
   vertical-align: middle;
   border: 1px solid #d1d5db; /* Bordures fines grises */
+  border-left: none;
+  border-right: none;
 }
 
 /* Première colonne (x et f(x)) */
@@ -104,6 +106,14 @@ th {
   font-weight: bold;
   background-color: #f3f4f6;
   width: 60px;
+  border-left: 1px solid #d1d5db;
+  border-right: 1px solid #d1d5db;
+}
+
+/* Dernière colonne */
+.variation-table td:last-child,
+.sign-table td:last-child {
+  border-right: 1px solid #d1d5db;
 }
 
 /* Ligne d'en-tête */
@@ -138,6 +148,23 @@ th {
 .forbidden-value {
   color: #9ca3af;
   letter-spacing: -0.3em;
+}
+
+/* Flèches */
+.arrow {
+  display: inline-block;
+  width: 0; 
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+}
+
+.arrow.up {
+  border-bottom: 10px solid black;
+}
+
+.arrow.down {
+  border-top: 10px solid black;
 }
 
 /* ===== SCROLLBAR ===== */
