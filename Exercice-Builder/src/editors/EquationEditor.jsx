@@ -1,6 +1,15 @@
 import React from 'react';
 
 const EquationEditor = ({ element, updateElement }) => {
+  // Vérification de sécurité
+  if (!element) {
+    return (
+      <div className="p-4 bg-yellow-50 border border-yellow-400 rounded">
+        <p className="text-yellow-800">Erreur : élément non défini</p>
+      </div>
+    );
+  }
+
   const content = element.content || {};
 
   // Fonction pour changer le type et nettoyer les champs inutiles
@@ -60,7 +69,7 @@ const EquationEditor = ({ element, updateElement }) => {
   };
 
   const removeStep = (index) => {
-    const steps = content.steps.filter((_, i) => i !== index);
+    const steps = (content.steps || []).filter((_, i) => i !== index);
     updateContent('steps', steps);
   };
 
