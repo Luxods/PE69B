@@ -1,11 +1,31 @@
-export const evaluateExpression = (expr, values) => {
-  try {
-    let evaluated = expr;
-    Object.keys(values).forEach(key => {
-      evaluated = evaluated.replace(new RegExp(`\\b${key}\\b`, 'g'), values[key]);
-    });
-    return evaluated;
-  } catch (e) {
-    return expr;
+export const evaluateExpression = (expression, variables = {}) => {
+  // Gestion sûre des types
+  if (expression === null || expression === undefined) {
+    return '';
   }
+  
+  // Convertir en string
+  let result = typeof expression === 'string' 
+    ? expression 
+    : expression.toString();
+  
+  // Remplacer les variables
+  Object.entries(variables).forEach(([key, value]) => {
+    const regex = new RegExp(`\\{${key}\\}`, 'g');
+    
+    let formattedValue;
+    if (value === null || value === undefined) {
+      formattedValue = '';
+    } else if (typeof value === 'number') {
+      formattedValue = Number.isInteger(value)
+        ? value.toString()
+        : parseFloat(value.toFixed(4)).toString();
+    } else {
+      formattedValue = value.toString();
+    }
+    
+    result = result.replace(regex, formattedValue);
+  });
+  
+  return result;
 };

@@ -36,23 +36,21 @@ export const getDefaultContent = (type) => {
       };
     case 'proba_tree':
       return {
-        levels: [
-          {
-            name: 'Niveau 1',
-            branches: [
-              { label: 'A', proba: '0.6' },
-              { label: 'non A', proba: '0.4' }
-            ]
-          },
-          {
-            name: 'Niveau 2',
-            branches: [
-              { parent: 'A', label: 'B', proba: '0.3' },
-              { parent: 'A', label: 'non B', proba: '0.7' },
-              { parent: 'non A', label: 'B', proba: '0.5' },
-              { parent: 'non A', label: 'non B', proba: '0.5' }
-            ]
-          }
+        nodes: [
+          // Racine
+          { id: 0, label: 'Départ', x: 50, y: 150, isRoot: true },
+          
+          // Niveau 1
+          { id: 1, label: 'A', x: 200, y: 100, parent: 0, proba: '0.6' },
+          { id: 2, label: 'non A', x: 200, y: 200, parent: 0, proba: '0.4' },
+          
+          // Niveau 2 - branches de A
+          { id: 3, label: 'B', x: 350, y: 50, parent: 1, proba: '0.3' },
+          { id: 4, label: 'non B', x: 350, y: 130, parent: 1, proba: '0.7' },
+          
+          // Niveau 2 - branches de non A
+          { id: 5, label: 'B', x: 350, y: 180, parent: 2, proba: '0.5' },
+          { id: 6, label: 'non B', x: 350, y: 260, parent: 2, proba: '0.5' }
         ]
       };
     case 'sequence':

@@ -11,6 +11,7 @@ import StatsTableEditor from './StatsTableEditor';
 import EquationEditor from './EquationEditor';
 import QuestionEditor from './QuestionEditor';
 import MCQEditor from './MCQEditor';
+import { ProbaTreeEditor } from './ProbaTreeEditor';
 
 const ElementEditor = ({ element, updateElement }) => {
   const { type, content, id } = element;
@@ -31,12 +32,7 @@ const ElementEditor = ({ element, updateElement }) => {
     case 'sign_table':
       return <SignTableEditor content={content} onUpdate={handleUpdate} />;
     case 'proba_tree':
-      return (
-        <div className="text-xs">
-          <p className="text-gray-600">Arbre 2 niveaux configuré par défaut</p>
-          <p className="text-gray-500 mt-1">Modifiez les probabilités dans le code JSON exporté</p>
-        </div>
-      );
+      return <ProbaTreeEditor content={content} onUpdate={handleUpdate} />;
     case 'sequence':
       return <SequenceEditor content={content} onUpdate={handleUpdate} />;
     case 'complex_plane':

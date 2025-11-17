@@ -1,18 +1,31 @@
 import React from 'react';
-import { evaluateExpression } from '../utils/evaluateExpression';
+import { MathText } from '../utils/mathRenderer';
 
 const FunctionRenderer = ({ content, generatedValues }) => {
-  const evaluatedExpression = evaluateExpression(content.expression, generatedValues);
-  
+  // Construire la fonction avec LaTeX
+  const functionText = content.name 
+    ? `$${content.name}(${content.variable || 'x'}) = ${content.expression}$`
+    : `$f(x) = ${content.expression}$`;
+
   return (
-    <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-      <p className="font-mono text-xl text-blue-900">
-        f(x) = {evaluatedExpression}
-      </p>
+    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div className="flex items-center gap-2">
+        <span className="text-xl">📈</span>
+        <MathText 
+          content={functionText} 
+          variables={generatedValues}
+          className="text-blue-900 font-medium text-lg"
+        />
+      </div>
+      
       {content.domain && (
-        <p className="text-sm text-blue-700 mt-2">
-          <span className="font-semibold">Domaine de définition :</span> {content.domain}
-        </p>
+        <div className="mt-2 ml-7">
+          <MathText 
+            content={`Domaine: $${content.domain}$`}
+            variables={generatedValues}
+            className="text-sm text-blue-700"
+          />
+        </div>
       )}
     </div>
   );

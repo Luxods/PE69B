@@ -1,12 +1,17 @@
 import React from 'react';
-import { evaluateExpression } from '../utils/evaluateExpression';
+import { MathText } from '../../utils/mathRenderer';
 
 const TextRenderer = ({ content, generatedValues }) => {
-  const evaluatedText = evaluateExpression(content.text, generatedValues);
-
+  // Gestion sûre du contenu
+  const textContent = content?.text || content || '';
+  
   return (
-    <div className="text-gray-700 leading-relaxed">
-      <p>{evaluatedText}</p>
+    <div className="p-4 bg-white rounded-lg border border-gray-200">
+      <MathText 
+        content={textContent} 
+        variables={generatedValues}
+        className="text-gray-800 leading-relaxed"
+      />
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { useExercises } from './hooks/useExercises';
 import { useVariables } from './hooks/useVariables';
 
 
+
 const App = () => {
   const [previewMode, setPreviewMode] = useState(false);
   

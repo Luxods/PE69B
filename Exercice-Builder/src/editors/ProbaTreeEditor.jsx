@@ -1,9 +1,23 @@
+import React from 'react';
+
 export const ProbaTreeEditor = ({ content, onChange }) => {
+  // Si le content est vide ou invalide, initialiser avec un arbre vide (juste la racine)
+  React.useEffect(() => {
+    if (!content || !content.nodes || content.nodes.length === 0) {
+      const defaultTree = {
+        nodes: [
+          { id: 0, label: 'Départ', x: 50, y: 150, isRoot: true }
+        ]
+      };
+      onChange(defaultTree);
+    }
+  }, []);
+
   const updateNode = (nodeId, field, value) => {
     const newNodes = content.nodes.map(node =>
       node.id === nodeId ? { ...node, [field]: value } : node
     );
-    onChange({ ...content, nodes: newNodes });
+    onChange({ nodes: newNodes });
   };
   
   const deleteNode = (nodeId) => {
@@ -14,7 +28,7 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
     while (hasChanges) {
       hasChanges = false;
       content.nodes.forEach(node => {
-        if (node.parent && nodesToDelete.has(node.parent) && !nodesToDelete.has(node.id)) {
+        if (node.parent !== undefined && nodesToDelete.has(node.parent) && !nodesToDelete.has(node.id)) {
           nodesToDelete.add(node.id);
           hasChanges = true;
         }
@@ -22,7 +36,7 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
     }
     
     const newNodes = content.nodes.filter(node => !nodesToDelete.has(node.id));
-    onChange({ ...content, nodes: newNodes });
+    onChange({ nodes: newNodes });
   };
   
   const addChild = (parentId) => {
@@ -35,14 +49,14 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
     
     const newNode = {
       id: newId,
-      label: 'Nouveau',
+      label: `Branche ${siblings.length + 1}`,
       x: parent.x + 150,
       y: parent.y + (siblings.length * 80) - 40,
       parent: parentId,
       proba: '0.5'
     };
     
-    onChange({ ...content, nodes: [...content.nodes, newNode] });
+    onChange({ nodes: [...content.nodes, newNode] });
   };
   
   const resetTree = () => {
@@ -56,18 +70,25 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
   
   // Organiser les nœuds par niveau
   const nodesByLevel = {};
-  content.nodes.forEach(node => {
-    let level = 0;
-    let current = node;
-    while (current.parent !== undefined) {
-      level++;
-      current = content.nodes.find(n => n.id === current.parent);
-      if (!current) break;
-    }
-    if (!nodesByLevel[level]) nodesByLevel[level] = [];
-    nodesByLevel[level].push(node);
-  });
+  if (content && content.nodes) {
+    content.nodes.forEach(node => {
+      let level = 0;
+      let current = node;
+      while (current && current.parent !== undefined) {
+        level++;
+        current = content.nodes.find(n => n.id === current.parent);
+        if (!current) break;
+      }
+      if (!nodesByLevel[level]) nodesByLevel[level] = [];
+      nodesByLevel[level].push(node);
+    });
+  }
   
+  // Vérifier si le content est valide
+  if (!content || !content.nodes) {
+    return <div>Chargement...</div>;
+  }
+
   return (
     <div className="proba-tree-editor">
       <div className="flex items-center justify-between mb-3">
@@ -79,35 +100,35 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
           onClick={resetTree}
           className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
         >
-          Réinitialiser
+          🔄 Réinitialiser
         </button>
       </div>
       
       <div className="tree-levels-container space-y-4">
         {Object.keys(nodesByLevel).sort((a, b) => parseInt(a) - parseInt(b)).map(level => (
           <div key={level} className="tree-level">
-            <div className="level-header">
+            <div className="level-header mb-2 pb-2 border-b border-gray-200">
               <span className="font-bold text-purple-700">
-                {level === '0' ? '🌳 Racine' : `Niveau ${level}`}
+                {level === '0' ? '🌳 Racine' : `📊 Niveau ${level}`}
               </span>
-              <span className="text-sm text-gray-500">
-                {nodesByLevel[level].length} nœud(s)
+              <span className="text-sm text-gray-500 ml-2">
+                ({nodesByLevel[level].length} nœud{nodesByLevel[level].length > 1 ? 's' : ''})
               </span>
             </div>
             
             <div className="tree-nodes-list space-y-2">
               {nodesByLevel[level].map((node) => (
-                <div key={node.id} className="tree-node-item border-2 border-purple-200 rounded-lg p-3 bg-white">
+                <div key={node.id} className="tree-node-item border-2 border-purple-200 rounded-lg p-3 bg-white hover:bg-purple-50 transition-colors">
                   <div className="flex items-start gap-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs font-mono bg-purple-100 px-2 py-1 rounded">
-                          #{node.id}
+                          ID:{node.id}
                         </span>
                         <input
                           className="flex-1 p-2 border rounded focus:ring-2 focus:ring-purple-300"
                           placeholder="Label du nœud"
-                          value={node.label}
+                          value={node.label || ''}
                           onChange={(e) => updateNode(node.id, 'label', e.target.value)}
                           disabled={node.isRoot}
                         />
@@ -115,7 +136,7 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
                           <input
                             className="w-24 p-2 border rounded focus:ring-2 focus:ring-purple-300"
                             placeholder="Proba"
-                            value={node.proba}
+                            value={node.proba || ''}
                             onChange={(e) => updateNode(node.id, 'proba', e.target.value)}
                           />
                         )}
@@ -123,8 +144,8 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
                       
                       {node.parent !== undefined && (
                         <div className="text-xs text-gray-500 ml-2">
-                          ↳ Parent: <span className="font-medium">
-                            {content.nodes.find(n => n.id === node.parent)?.label || '?'}
+                          ↳ Parent: <span className="font-medium text-purple-600">
+                            {content.nodes.find(n => n.id === node.parent)?.label || 'Nœud #' + node.parent}
                           </span>
                         </div>
                       )}
@@ -133,7 +154,7 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
                     <div className="flex flex-col gap-1">
                       <button
                         onClick={() => addChild(node.id)}
-                        className="p-2 bg-green-100 text-green-700 rounded hover:bg-green-200 text-xs font-medium"
+                        className="p-2 bg-green-100 text-green-700 rounded hover:bg-green-200 text-xs font-medium transition-colors"
                         title="Ajouter un enfant"
                       >
                         + Enfant
@@ -141,8 +162,8 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
                       {!node.isRoot && (
                         <button
                           onClick={() => deleteNode(node.id)}
-                          className="p-2 bg-red-100 text-red-700 rounded hover:bg-red-200 text-xs font-medium"
-                          title="Supprimer ce nœud"
+                          className="p-2 bg-red-100 text-red-700 rounded hover:bg-red-200 text-xs font-medium transition-colors"
+                          title="Supprimer ce nœud et ses enfants"
                         >
                           🗑️ Suppr.
                         </button>
@@ -158,7 +179,7 @@ export const ProbaTreeEditor = ({ content, onChange }) => {
       
       {content.nodes.length === 1 && (
         <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
-          <p className="text-blue-800 font-medium">
+          <p className="text-blue-800 font-medium mb-2">
             🌱 Commencez par ajouter des enfants au nœud racine "Départ"
           </p>
         </div>

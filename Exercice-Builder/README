@@ -60,3 +60,20 @@ Format des Exercices .json
       }
     ]
   }
+
+
+Utilisation de Latex pour les formules mathématiques. 
+Rappel des règles Latex : 
+Fractions: \frac{a}{b}
+Racines: \sqrt{x} ou \sqrt[n]{x}
+Puissances: x^{2} ou x^{n}
+Indices: x_{i} ou x_{n}
+Somme: \sum_{i=1}^{n}
+Intégrale: \int_{a}^{b}
+Limites: \lim_{x \to \infty}
+Dérivée: \frac{d}{dx}
+Vecteurs: \vec{v}
+Matrices: \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+Ensembles: \mathbb{R}, \mathbb{N}, \mathbb{Z}
+Grec: \alpha, \beta, \gamma, \pi, \Delta
+Symboles: \leq, \geq, \neq, \approx, \pm, \infty
