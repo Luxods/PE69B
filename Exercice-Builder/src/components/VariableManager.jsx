@@ -55,8 +55,13 @@ const VariableManager = ({ currentExercise, generatedValues, addVariable, update
                     type="number"
                     className="flex-1 p-1 border rounded"
                     placeholder="Min"
-                    value={variable.min}
-                    onChange={(e) => updateVariable(variable.id, { min: parseFloat(e.target.value) })}
+                    value={variable.min ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      updateVariable(variable.id, { 
+                        min: value === '' ? null : parseFloat(value) 
+                      });
+                    }}
                   />
                   <p>Max :</p>
                   <input
@@ -64,7 +69,12 @@ const VariableManager = ({ currentExercise, generatedValues, addVariable, update
                     className="flex-1 p-1 border rounded"
                     placeholder="Max"
                     value={variable.max}
-                    onChange={(e) => updateVariable(variable.id, { max: parseFloat(e.target.value) })}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      updateVariable(variable.id, { 
+                        min: value === '' ? null : parseFloat(value) 
+                      });
+                    }}
                   />
                   {variable.type === 'decimal' && (
                     <input

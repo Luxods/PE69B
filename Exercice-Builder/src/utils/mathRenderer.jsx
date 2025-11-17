@@ -3,12 +3,11 @@ import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
 
 /**
- * Remplace les variables entre accolades
+ * Remplace les variables AVEC accolades {var}
+ * Pour : text, question, mcq
  */
-export const replaceVariables = (text, variables = {}) => {
-  // S'assurer que text est une chaîne
+export const replaceVariablesWithBraces = (text, variables = {}) => {
   if (typeof text !== 'string') {
-    console.warn('replaceVariables: text is not a string:', text);
     return String(text || '');
   }
   
@@ -18,19 +17,17 @@ export const replaceVariables = (text, variables = {}) => {
   
   let result = text;
   
-  // Remplacer les variables
   Object.entries(variables).forEach(([key, value]) => {
-    // Créer une regex pour {key}
+    // Remplace {key} uniquement
     const regex = new RegExp(`\\{${key}\\}`, 'g');
     
-    // Formater la valeur
     let formattedValue = '';
     if (value === null || value === undefined) {
       formattedValue = '';
     } else if (typeof value === 'number') {
       formattedValue = Number.isInteger(value) 
         ? value.toString() 
-        : parseFloat(value.toFixed(4)).toString(); // Enlève les zéros inutiles
+        : parseFloat(value.toFixed(4)).toString();
     } else {
       formattedValue = String(value);
     }
@@ -42,18 +39,76 @@ export const replaceVariables = (text, variables = {}) => {
 };
 
 /**
- * Composant principal pour le rendu math
+ * Remplace les variables SANS accolades
+ * Pour : equation, function, graph, etc.
  */
-export const MathText = ({ content, variables = {}, className = '' }) => {
-  // S'assurer que content est une chaîne
+export const replaceVariablesWithoutBraces = (text, variables = {}) => {
+  if (typeof text !== 'string') {
+    return String(text || '');
+  }
+  
+  if (!variables || Object.keys(variables).length === 0) {
+    return text;
+  }
+  
+  let result = text;
+  
+  // Trier par longueur décroissante pour éviter les remplacements partiels
+  // Ex: remplacer "abc" avant "ab" avant "a"
+  const sortedKeys = Object.keys(variables).sort((a, b) => b.length - a.length);
+  
+  sortedKeys.forEach(key => {
+    const value = variables[key];
+    
+    // Remplace la variable entourée de caractères non-alphanumériques
+    // ou en début/fin de chaîne
+    const regex = new RegExp(`\\b${key}\\b`, 'g');
+    
+    let formattedValue = '';
+    if (value === null || value === undefined) {
+      formattedValue = '';
+    } else if (typeof value === 'number') {
+      // Mettre entre parenthèses si négatif pour éviter les problèmes
+      if (value < 0) {
+        formattedValue = `(${value})`;
+      } else {
+        formattedValue = Number.isInteger(value) 
+          ? value.toString() 
+          : parseFloat(value.toFixed(4)).toString();
+      }
+    } else {
+      formattedValue = String(value);
+    }
+    
+    result = result.replace(regex, formattedValue);
+  });
+  
+  return result;
+};
+
+/**
+ * Fonction helper pour choisir automatiquement
+ */
+export const replaceVariables = (text, variables = {}, requireBraces = true) => {
+  return requireBraces 
+    ? replaceVariablesWithBraces(text, variables)
+    : replaceVariablesWithoutBraces(text, variables);
+};
+
+/**
+ * Composant pour le rendu math avec choix du mode
+ */
+export const MathText = ({ content, variables = {}, className = '', requireBraces = true }) => {
   const textContent = String(content || '');
   
   if (!textContent) {
     return null;
   }
   
-  // Remplacer les variables
-  const processedContent = replaceVariables(textContent, variables);
+  // Remplacer les variables selon le mode
+  const processedContent = requireBraces 
+    ? replaceVariablesWithBraces(textContent, variables)
+    : replaceVariablesWithoutBraces(textContent, variables);
   
   // Séparer le texte et les formules math
   const parts = [];

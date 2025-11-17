@@ -2,7 +2,6 @@ import React from 'react';
 import { MathText } from '../utils/mathRenderer';
 
 const FunctionRenderer = ({ content, generatedValues }) => {
-  // Construire la fonction avec LaTeX
   const functionText = content.name 
     ? `$${content.name}(${content.variable || 'x'}) = ${content.expression}$`
     : `$f(x) = ${content.expression}$`;
@@ -15,18 +14,9 @@ const FunctionRenderer = ({ content, generatedValues }) => {
           content={functionText} 
           variables={generatedValues}
           className="text-blue-900 font-medium text-lg"
+          requireBraces={false}  // PAS besoin de {}
         />
       </div>
-      
-      {content.domain && (
-        <div className="mt-2 ml-7">
-          <MathText 
-            content={`Domaine: $${content.domain}$`}
-            variables={generatedValues}
-            className="text-sm text-blue-700"
-          />
-        </div>
-      )}
     </div>
   );
 };
