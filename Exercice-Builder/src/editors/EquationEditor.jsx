@@ -1,85 +1,67 @@
 import React from 'react';
 
-const EquationEditor = ({ element, updateElement }) => {
-  // Vérification de sécurité
-  if (!element) {
-    return (
-      <div className="p-4 bg-yellow-50 border border-yellow-400 rounded">
-        <p className="text-yellow-800">Erreur : élément non défini</p>
-      </div>
-    );
-  }
-
-  const content = element.content || {};
+const EquationEditor = ({ content, onUpdate }) => {
+  // Initialiser le contenu s'il n'existe pas
+  const safeContent = content || {
+    type: 'simple',
+    latex: '',
+    showSteps: false,
+    showSolution: false
+  };
 
   // Fonction pour changer le type et nettoyer les champs inutiles
   const handleTypeChange = (newType) => {
-    // Créer un nouveau contenu selon le type
     let newContent = {
       type: newType,
-      showSteps: content.showSteps || false,
-      showSolution: content.showSolution || false
+      showSteps: safeContent.showSteps || false,
+      showSolution: safeContent.showSolution || false
     };
 
-    // Garder la solution si elle existe
-    if (content.solution) {
-      newContent.solution = content.solution;
+    if (safeContent.solution) {
+      newContent.solution = safeContent.solution;
     }
 
-    // Garder les étapes personnalisées si elles existent
-    if (content.steps) {
-      newContent.steps = content.steps;
+    if (safeContent.steps) {
+      newContent.steps = safeContent.steps;
     }
 
-    // Initialiser le champ approprié selon le type
     if (newType === 'system') {
-      newContent.system = '';
-      // Supprimer les champs inutiles
-      delete newContent.latex;
-      delete newContent.equation;
+      newContent.system = safeContent.system || '';
     } else {
-      newContent.latex = '';
-      // Supprimer les champs inutiles
-      delete newContent.system;
-      delete newContent.equation;
+      newContent.latex = safeContent.latex || '';
     }
 
-    updateElement({
-      ...element,
-      content: newContent
-    });
+    onUpdate(newContent);
   };
 
   const updateContent = (field, value) => {
-    updateElement({
-      ...element,
-      content: { ...content, [field]: value }
-    });
+    onUpdate({ ...safeContent, [field]: value });
   };
 
   const addStep = () => {
-    const steps = content.steps || [];
+    const steps = safeContent.steps || [];
     updateContent('steps', [...steps, '']);
   };
 
   const updateStep = (index, value) => {
-    const steps = [...(content.steps || [])];
+    const steps = [...(safeContent.steps || [])];
     steps[index] = value;
     updateContent('steps', steps);
   };
 
   const removeStep = (index) => {
-    const steps = (content.steps || []).filter((_, i) => i !== index);
+    const steps = (safeContent.steps || []).filter((_, i) => i !== index);
     updateContent('steps', steps);
   };
 
   return (
     <div className="space-y-4">
+      {/* Le reste du JSX reste identique */}
       <div>
         <label className="block text-sm font-medium mb-1">Type d'équation</label>
         <select 
           className="w-full p-2 border rounded"
-          value={content.type || 'simple'}
+          value={safeContent.type || 'simple'}
           onChange={(e) => handleTypeChange(e.target.value)}
         >
           <option value="simple">Équation simple</option>
@@ -87,20 +69,20 @@ const EquationEditor = ({ element, updateElement }) => {
         </select>
       </div>
 
-      {content.type === 'system' ? (
+      {safeContent.type === 'system' ? (
         <div>
           <label className="block text-sm font-medium mb-1">
-            Système d'équations (LaTeX ou une équation par ligne)
+            Système d'équations (LaTeX)
           </label>
           <textarea 
             className="w-full p-2 border rounded font-mono text-sm"
             rows={4}
-            value={content.system || ''}
+            value={safeContent.system || ''}
             onChange={(e) => updateContent('system', e.target.value)}
-            placeholder={'Exemple avec LaTeX:\n\\begin{cases}\n{a}x + {b}y = {c} \\\\\n{d}x + {e}y = {f}\n\\end{cases}\n\nOu simple:\n{a}x + {b}y = {c}\n{d}x + {e}y = {f}'}
+            placeholder={'Exemple avec LaTeX:\n\\begin{cases}\n{a}x + {b}y = {c} \\\\\n{d}x + {e}y = {f}\n\\end{cases}\n'}
           />
           <p className="text-xs text-gray-600 mt-1">
-            Utilisez \begin{`{cases}`} pour un système LaTeX ou séparez les équations par des retours à la ligne
+            Utilisez \begin{`{cases}`} pour un système LaTeX et \end{'cases'}
           </p>
         </div>
       ) : (
@@ -111,7 +93,7 @@ const EquationEditor = ({ element, updateElement }) => {
           <input 
             type="text"
             className="w-full p-2 border rounded font-mono"
-            value={content.latex || ''}
+            value={safeContent.latex || ''}
             onChange={(e) => updateContent('latex', e.target.value)}
             placeholder="Ex: {a}x^2 + {b}x + {c} = 0"
           />
@@ -125,7 +107,7 @@ const EquationEditor = ({ element, updateElement }) => {
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            checked={content.showSteps || false}
+            checked={safeContent.showSteps || false}
             onChange={(e) => updateContent('showSteps', e.target.checked)}
           />
           <span className="text-sm">Afficher les étapes</span>
@@ -134,20 +116,20 @@ const EquationEditor = ({ element, updateElement }) => {
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            checked={content.showSolution || false}
+            checked={safeContent.showSolution || false}
             onChange={(e) => updateContent('showSolution', e.target.checked)}
           />
           <span className="text-sm">Afficher la solution</span>
         </label>
       </div>
 
-      {content.showSteps && (
+      {safeContent.showSteps && (
         <div>
           <label className="block text-sm font-medium mb-1">
             Étapes personnalisées (optionnel)
           </label>
           <div className="space-y-2">
-            {(content.steps || []).map((step, index) => (
+            {(safeContent.steps || []).map((step, index) => (
               <div key={index} className="flex gap-2">
                 <input
                   type="text"
@@ -159,6 +141,7 @@ const EquationEditor = ({ element, updateElement }) => {
                 <button
                   onClick={() => removeStep(index)}
                   className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  type="button"
                 >
                   ×
                 </button>
@@ -167,6 +150,7 @@ const EquationEditor = ({ element, updateElement }) => {
             <button
               onClick={addStep}
               className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+              type="button"
             >
               + Ajouter une étape
             </button>
@@ -174,7 +158,7 @@ const EquationEditor = ({ element, updateElement }) => {
         </div>
       )}
 
-      {content.showSolution && (
+      {safeContent.showSolution && (
         <div>
           <label className="block text-sm font-medium mb-1">
             Solution (format LaTeX)
@@ -182,24 +166,12 @@ const EquationEditor = ({ element, updateElement }) => {
           <input
             type="text"
             className="w-full p-2 border rounded font-mono"
-            value={content.solution || ''}
+            value={safeContent.solution || ''}
             onChange={(e) => updateContent('solution', e.target.value)}
             placeholder="Ex: x = \\frac{-{b} \\pm \\sqrt{{b}^2 - 4{a}{c}}}{2{a}}"
           />
         </div>
       )}
-
-      {/* Aperçu LaTeX */}
-      <div className="p-3 bg-gray-100 rounded">
-        <p className="text-xs font-semibold mb-2 text-gray-600">Aide LaTeX :</p>
-        <div className="text-xs space-y-1 font-mono">
-          <p>• Fraction: \frac{`{num}`}{`{den}`}</p>
-          <p>• Racine: \sqrt{`{x}`}</p>
-          <p>• Puissance: x^{`{n}`}</p>
-          <p>• Système: \begin{`{cases}`}...\end{`{cases}`}</p>
-          <p>• Symboles: \leq, \geq, \neq, \pm, \infty</p>
-        </div>
-      </div>
     </div>
   );
 };

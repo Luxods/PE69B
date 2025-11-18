@@ -58,6 +58,24 @@ const Sidebar = ({ exercises, exportJSON }) => {
           <li>• Exportez en JSON (prof ou élève)</li>
         </ul>
       </div>
+
+      <div className="mt-6 p-3 bg-blue-50 rounded-lg border border-blue-200">
+        <h3 className="font-bold text-blue-900 text-sm mb-2">💡 Guide Latex</h3>
+        <ul className="text-xs text-blue-800 space-y-1">
+          <li>• Fractions: \frac{'{a}'}{'{b}'}</li>
+          <li>• Racines: \sqrt{'{x}'} ou \sqrt[n]{'{x}'}</li>
+          <li>• Puissances: x^{'{2}'} ou x^{'{n}'}</li>
+          <li>• Indices: x_{'{i}'} ou x_{'{n}'}</li>
+          <li>• Somme: \sum_{'{i=1}'}^{'{n}'}</li>
+          <li>• Intégrale: \int_{'{a}'}^{'{b}'}</li>
+          <li>• Limites: \lim_{'{x \to \infty}'}</li>
+          <li>• Dérivée: \frac{'{d}'}{'{dx}'}</li>
+          <li>• Vecteurs: \vec{'{v}'}</li>
+          <li>• Ensembles: \mathbb{'{R}'}, \mathbb{'{N}'}, \mathbb{'{Z}'}</li>
+          <li>• Grec: \alpha, \beta, \gamma, \pi, \Delta</li>
+          <li>• Symboles: \leq, \geq, \neq, \approx, \pm, \infty</li> 
+        </ul>
+      </div>
       
       <ExportModal
         isOpen={showExportModal}

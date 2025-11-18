@@ -72,7 +72,7 @@ const VariableManager = ({ currentExercise, generatedValues, addVariable, update
                     onChange={(e) => {
                       const value = e.target.value;
                       updateVariable(variable.id, { 
-                        min: value === '' ? null : parseFloat(value) 
+                        max: value === '' ? null : parseFloat(value) 
                       });
                     }}
                   />
