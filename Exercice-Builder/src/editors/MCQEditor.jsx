@@ -118,6 +118,18 @@ const MCQEditor = ({ content, onUpdate }) => {
         </div>
       </div>
 
+      {/* Indice optionnel */}
+      <div>
+        <label className="text-xs font-medium">💡 Indice (optionnel)</label>
+        <input
+          type="text"
+          className="w-full p-1 border rounded text-sm"
+          value={content.hint || ''}
+          onChange={(e) => onUpdate({ ...content, hint: e.target.value })}
+          placeholder="Pensez à utiliser la formule..."
+        />
+      </div>
+
       {/* Explication */}
       <div>
         <label className="text-xs font-medium">📝 Explication (après correction)</label>
@@ -129,16 +141,8 @@ const MCQEditor = ({ content, onUpdate }) => {
           placeholder="Explication de la bonne réponse..."
         />
       </div>
-
-      {/* Résumé */}
-      <div className="p-2 bg-blue-50 rounded text-xs">
-        <p className="text-blue-800 font-semibold">📊 Résumé :</p>
-        <p>• {content.options.length} options</p>
-        <p>• {content.options.filter(o => o.correct).length} réponse(s) correcte(s)</p>
-        <p>• Type : {content.multipleAnswers ? 'Choix multiples' : 'Choix unique'}</p>
-        <p>• Points : {content.points || 1}</p>
-      </div>
     </div>
+
   );
 };
 

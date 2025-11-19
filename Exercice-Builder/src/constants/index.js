@@ -13,6 +13,7 @@ export const elementTypes = [
   { type: 'sign_table', label: 'Tableau de signes', icon: '±', chapters: ['Analyse', 'Fonctions'] },
   { type: 'proba_tree', label: 'Arbre de probabilité', icon: '🌳', chapters: ['Probabilités'] },
   { type: 'sequence', label: 'Suite', icon: '🔢', chapters: ['Suites'] },
+  { type: 'discrete_graph', label: 'Graphe Discret', icon: '📊', chapters: ['Analyse', 'Fonctions', 'Suites'] },
   { type: 'complex_plane', label: 'Plan complexe', icon: '🔷', chapters: ['Nombres complexes'] },
   { type: 'vector', label: 'Vecteur', icon: '➡️', chapters: ['Géométrie'] },
   { type: 'stats_table', label: 'Tableau statistique', icon: '📊', chapters: ['Statistiques', 'Probabilités'] },

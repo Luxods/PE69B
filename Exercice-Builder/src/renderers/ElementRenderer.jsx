@@ -12,6 +12,8 @@ import StatsTableRenderer from './StatsTableRenderer';
 import EquationRenderer from './EquationRenderer';
 import QuestionRenderer from './QuestionRenderer';
 import MCQRenderer from './MCQRenderer';
+import DiscreteGraphRenderer from './DiscreteGraphRenderer';
+
 
 const ElementRenderer = ({ element, generatedValues }) => {
   const { type, content } = element;
@@ -31,6 +33,8 @@ const ElementRenderer = ({ element, generatedValues }) => {
       return <ProbaTreeRenderer content={content} generatedValues={generatedValues} />;
     case 'sequence':
       return <SequenceRenderer content={content} generatedValues={generatedValues} />;
+    case 'discrete_graph':
+      return <DiscreteGraphRenderer content={content} generatedValues={generatedValues} />;
     case 'complex_plane':
       return <ComplexPlaneRenderer content={content} generatedValues={generatedValues} />;
     case 'vector':

@@ -12,6 +12,8 @@ import EquationEditor from './EquationEditor';
 import QuestionEditor from './QuestionEditor';
 import MCQEditor from './MCQEditor';
 import { ProbaTreeEditor } from './ProbaTreeEditor';
+import DiscreteGraphEditor from './DiscreteGraphEditor';
+
 
 const ElementEditor = ({ element, updateElement }) => {
   const { type, content, id } = element;
@@ -35,6 +37,8 @@ const ElementEditor = ({ element, updateElement }) => {
       return <ProbaTreeEditor content={content} onUpdate={handleUpdate} />;
     case 'sequence':
       return <SequenceEditor content={content} onUpdate={handleUpdate} />;
+    case 'discrete_graph':
+      return <DiscreteGraphEditor content={content} onUpdate={handleUpdate} />;
     case 'complex_plane':
       return <ComplexPlaneEditor content={content} onUpdate={handleUpdate} />;
     case 'vector':

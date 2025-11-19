@@ -52,6 +52,14 @@ const GraphEditor = ({ content, onUpdate }) => {
           />
           Afficher axes
         </label>
+        <label className="flex items-center gap-1 text-xs">
+          <input
+            type="checkbox"
+            checked={content.showAxes !== false}
+            onChange={(e) => onUpdate({ ...content, auto_window: e.target.checked })}
+          />
+          Fenêtré automatiquement
+        </label>
       </div>
     </div>
   );

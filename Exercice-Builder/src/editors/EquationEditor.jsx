@@ -95,10 +95,10 @@ const EquationEditor = ({ content, onUpdate }) => {
             className="w-full p-2 border rounded font-mono"
             value={safeContent.latex || ''}
             onChange={(e) => updateContent('latex', e.target.value)}
-            placeholder="Ex: {a}x^2 + {b}x + {c} = 0"
+            placeholder="Ex: a*x^2 + b*x + c = 0"
           />
           <p className="text-xs text-gray-600 mt-1">
-            Utilisez {`{variable}`} pour les valeurs dynamiques, $ $ pour inline, $$ $$ pour bloc
+            Utilisez {`{variable}`} pour les valeurs dynamiques
           </p>
         </div>
       )}
