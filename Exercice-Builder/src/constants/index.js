@@ -21,3 +21,5 @@ export const elementTypes = [
   { type: 'question', label: 'Question', icon: '❓', chapters: 'all' },
   { type: 'mcq', label: 'QCM', icon: '☑️', chapters: 'all' }
 ];
+
+//Ajouter compétences par chapitres

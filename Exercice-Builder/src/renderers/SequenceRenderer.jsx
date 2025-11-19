@@ -1,6 +1,7 @@
 import React from 'react';
 import { evaluateExpression } from '../utils/evaluateExpression';
 
+
 const SequenceRenderer = ({ content, generatedValues }) => {
   // Fonction pour formater avec indices HTML
   const formatMathExpression = (text) => {

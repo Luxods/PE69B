@@ -38,6 +38,18 @@ const ExerciseInfo = ({ currentExercise, setCurrentExercise }) => {
             {difficulties.map(d => <option key={d}>{d}</option>)}
           </select>
         </div>
+{/*}
+        <div>
+          <label className="block text-sm font-medium mb-1">Compétence</label>
+          <select
+            className="w-full p-2 border-2 border-gray-300 rounded-lg"
+            value={currentExercise.ability}
+            onChange={(e) => setCurrentExercise({...currentExercise, ability: e.target.value})}
+          >
+            {ability.map(ch => <option key={ch}>{ch}</option>)}
+          </select>
+        </div>
+        */}
       </div>
     </div>
   );

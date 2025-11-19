@@ -1,18 +1,6 @@
 import React from 'react';
 
 const SequenceEditor = ({ content, onUpdate }) => {
-  // Fonction pour formater avec indices
-  const formatMathExpression = (text) => {
-    if (!text) return '';
-    return text
-      .replace(/U_\(n\+1\)/g, 'U<sub>n+1</sub>')
-      .replace(/U_\(n-1\)/g, 'U<sub>n-1</sub>')
-      .replace(/U_n\+1/g, 'U<sub>n+1</sub>')
-      .replace(/U_n-1/g, 'U<sub>n-1</sub>')
-      .replace(/U_n/g, 'U<sub>n</sub>')
-      .replace(/U_(\d+)/g, 'U<sub>$1</sub>');
-  };
-
   return (
     <div className="space-y-3">
       <div>
@@ -40,15 +28,6 @@ const SequenceEditor = ({ content, onUpdate }) => {
             onChange={(e) => onUpdate({ ...content, formula: e.target.value })}
             placeholder="Ex: U_n = 2*n + 1"
           />
-          {content.formula && (
-            <div className="mt-1 p-2 bg-purple-100 rounded">
-              <span className="text-xs text-purple-600">Aperçu :</span>
-              <div 
-                className="font-mono text-purple-900"
-                dangerouslySetInnerHTML={{ __html: formatMathExpression(content.formula) }}
-              />
-            </div>
-          )}
         </div>
       )}
 
@@ -63,15 +42,6 @@ const SequenceEditor = ({ content, onUpdate }) => {
             onChange={(e) => onUpdate({ ...content, relation: e.target.value })}
             placeholder="Ex: U_n+1 = 2*U_n + 3"
           />
-          {content.relation && (
-            <div className="mt-1 p-2 bg-purple-100 rounded">
-              <span className="text-xs text-purple-600">Aperçu :</span>
-              <div 
-                className="font-mono text-purple-900"
-                dangerouslySetInnerHTML={{ __html: formatMathExpression(content.relation) }}
-              />
-            </div>
-          )}
         </div>
       )}
 
