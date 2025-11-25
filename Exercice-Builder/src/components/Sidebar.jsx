@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { Download } from 'lucide-react';
 import ExportModal from './ExportModal';
 
-const Sidebar = ({ exercises, exportJSON }) => {
+const Sidebar = ({ exercises, currentExercise, exportJSON }) => {
   const [showExportModal, setShowExportModal] = useState(false);
+
+  const handleExport = (includeAnswers, prettify, mode) => {
+    exportJSON(includeAnswers, prettify, mode);
+    setShowExportModal(false);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800">💾 Exercices</h2>
+        <h2 className="text-xl font-bold text-gray-800">💾 Exercices ({exercises.length})</h2>
         {exercises.length > 0 && (
           <button
             onClick={() => setShowExportModal(true)}
@@ -38,11 +43,16 @@ const Sidebar = ({ exercises, exportJSON }) => {
                   {ex.difficulty}
                 </span>
               </div>
+              {ex.competences && ex.competences.length > 0 && (
+                <div className="mt-2 text-xs text-green-600">
+                  📚 {ex.competences.length} compétence{ex.competences.length > 1 ? 's' : ''}
+                </div>
+              )}
               <div className="mt-2 text-xs text-gray-500">
-                {ex.variables.length > 0 && (
+                {ex.variables?.length > 0 && (
                   <span className="mr-2">🎲 {ex.variables.length} var.</span>
                 )}
-                <span>📝 {ex.elements.length} élém.</span>
+                <span>📝 {ex.elements?.length || 0} élém.</span>
               </div>
             </div>
           ))
@@ -54,10 +64,11 @@ const Sidebar = ({ exercises, exportJSON }) => {
         <ul className="text-xs text-blue-800 space-y-1">
           <li>• Créez des variables (a, b, c...)</li>
           <li>• Utilisez {'{a}'}, {'{b}'} dans les textes</li>
-          <li>• Glissez les éléments pour réorganiser</li>
+          <li>• Sélectionnez les compétences travaillées</li>
           <li>• Exportez en JSON (prof ou élève)</li>
         </ul>
       </div>
+
 
       <div className="mt-6 p-3 bg-blue-50 rounded-lg border border-blue-200">
         <h3 className="font-bold text-blue-900 text-sm mb-2">💡 Guide Latex</h3>
@@ -80,8 +91,9 @@ const Sidebar = ({ exercises, exportJSON }) => {
       <ExportModal
         isOpen={showExportModal}
         onClose={() => setShowExportModal(false)}
-        onExport={exportJSON}
+        exercises={exercises}
         exerciseCount={exercises.length}
+        onExport={handleExport}
       />
     </div>
   );

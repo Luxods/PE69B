@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { Download, X, FileJson, Users, GraduationCap } from 'lucide-react';
+import { Download, X, FileJson, Users, GraduationCap, Files, FileArchive } from 'lucide-react';
 
-const ExportModal = ({ isOpen, onClose, onExport, exerciseCount }) => {
+const ExportModal = ({ isOpen, onClose, exercises, exerciseCount, onExport }) => {
   const [includeAnswers, setIncludeAnswers] = useState(true);
   const [prettify, setPrettify] = useState(true);
+  const [exportMode, setExportMode] = useState('multiple');
 
   if (!isOpen) return null;
 
   const handleExport = () => {
-    onExport(includeAnswers, prettify);
-    onClose();
+    onExport(includeAnswers, prettify, exportMode);
   };
 
   return (
@@ -20,10 +20,7 @@ const ExportModal = ({ isOpen, onClose, onExport, exerciseCount }) => {
             <FileJson className="inline mr-2" size={24} />
             Exporter les exercices
           </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X size={24} />
           </button>
         </div>
@@ -35,42 +32,72 @@ const ExportModal = ({ isOpen, onClose, onExport, exerciseCount }) => {
             </p>
           </div>
 
-          <div className="space-y-3">
-            <label className="flex items-start gap-3 p-3 border rounded hover:bg-gray-50 cursor-pointer">
+          {/* Mode d'export */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Mode d'export :</p>
+            <label className="flex items-start gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
               <input
                 type="radio"
-                name="export-type"
-                checked={includeAnswers}
-                onChange={() => setIncludeAnswers(true)}
-                className="mt-1"
+                checked={exportMode === 'multiple'}
+                onChange={() => setExportMode('multiple')}
               />
               <div>
-                <div className="flex items-center gap-2 font-medium">
-                  <GraduationCap size={18} />
-                  Version professeur
+                <div className="font-medium text-sm">
+                  <Files className="inline mr-1" size={14} />
+                  Fichiers séparés
                 </div>
-                <p className="text-sm text-gray-600">
-                  Inclut toutes les réponses et corrections
-                </p>
+                <p className="text-xs text-gray-600">Un fichier par exercice</p>
               </div>
             </label>
-
-            <label className="flex items-start gap-3 p-3 border rounded hover:bg-gray-50 cursor-pointer">
+            
+            <label className="flex items-start gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
               <input
                 type="radio"
-                name="export-type"
-                checked={!includeAnswers}
-                onChange={() => setIncludeAnswers(false)}
-                className="mt-1"
+                checked={exportMode === 'single'}
+                onChange={() => setExportMode('single')}
               />
               <div>
-                <div className="flex items-center gap-2 font-medium">
-                  <Users size={18} />
+                <div className="font-medium text-sm">
+                  <FileArchive className="inline mr-1" size={14} />
+                  Fichier unique
+                </div>
+                <p className="text-xs text-gray-600">Tous dans un seul fichier</p>
+              </div>
+            </label>
+          </div>
+
+          {/* Version */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Version :</p>
+            <label className="flex items-start gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+              <input
+                type="radio"
+                name="version"
+                checked={includeAnswers}
+                onChange={() => setIncludeAnswers(true)}
+              />
+              <div>
+                <div className="font-medium text-sm">
+                  <GraduationCap className="inline mr-1" size={14} />
+                  Version professeur
+                </div>
+                <p className="text-xs text-gray-600">Avec réponses</p>
+              </div>
+            </label>
+            
+            <label className="flex items-start gap-3 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+              <input
+                type="radio"
+                name="version"
+                checked={!includeAnswers}
+                onChange={() => setIncludeAnswers(false)}
+              />
+              <div>
+                <div className="font-medium text-sm">
+                  <Users className="inline mr-1" size={14} />
                   Version élève
                 </div>
-                <p className="text-sm text-gray-600">
-                  Sans les réponses (pour distribution)
-                </p>
+                <p className="text-xs text-gray-600">Sans réponses</p>
               </div>
             </label>
           </div>

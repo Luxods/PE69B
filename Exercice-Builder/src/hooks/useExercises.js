@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getDefaultContent } from '../utils/defaultContent';
+import { exportToJSON, exportAllInOne, importFromJSON } from '../utils/exportUtils';
 
 export const useExercises = () => {
   const [exercises, setExercises] = useState([]);
@@ -7,6 +8,7 @@ export const useExercises = () => {
     title: '',
     difficulty: 'Facile',
     chapter: 'Analyse',
+    competences: [],
     variables: [],
     elements: []
   });
@@ -32,24 +34,47 @@ export const useExercises = () => {
     });
   };
 
-
   const deleteElement = (id) => {
     setCurrentExercise({
       ...currentExercise,
       elements: currentExercise.elements.filter(el => el.id !== id)
     });
   };
+
+  const moveElement = (fromIndex, toIndex) => {
+    const newElements = [...currentExercise.elements];
+    const [removed] = newElements.splice(fromIndex, 1);
+    newElements.splice(toIndex, 0, removed);
+    setCurrentExercise({
+      ...currentExercise,
+      elements: newElements
+    });
+  };
   
   const saveExercise = () => {
     if (currentExercise.title && currentExercise.elements.length > 0) {
-      setExercises([...exercises, { ...currentExercise, id: Date.now() }]);
+      const exerciseToSave = {
+        id: Date.now(),
+        title: currentExercise.title,
+        chapter: currentExercise.chapter,
+        difficulty: currentExercise.difficulty,
+        competences: currentExercise.competences || [],
+        variables: currentExercise.variables || [],
+        elements: currentExercise.elements || []
+      };
+      
+      setExercises([...exercises, exerciseToSave]);
+      
+      // Réinitialiser pour un nouvel exercice
       setCurrentExercise({
         title: '',
         difficulty: 'Facile',
         chapter: 'Analyse',
+        competences: [],
         variables: [],
         elements: []
       });
+      
       alert('✅ Exercice sauvegardé !');
       return true;
     } else {
@@ -58,86 +83,67 @@ export const useExercises = () => {
     }
   };
 
-  const exportJSON = (includeAnswers = true, prettify = true) => {
-    const dataToExport = exercises.map(ex => {
-      if (!includeAnswers) {
-        // Version sans réponses (pour les élèves)
-        return {
-          ...ex,
-          elements: ex.elements.map(el => {
-            if (el.type === 'question') {
-              const { answer, lowerBound, upperBound, explanation, ...rest } = el.content;
-              return { ...el, content: rest };
-            }
-            if (el.type === 'mcq') {
-              return {
-                ...el,
-                content: {
-                  ...el.content,
-                  options: el.content.options.map(opt => ({
-                    text: opt.text,
-                    correct: false // Masquer les bonnes réponses
-                  })),
-                  explanation: undefined
-                }
-              };
-            }
-            return el;
-          })
-        };
-      }
-      return ex;
+  const loadExercise = (exercise) => {
+    setCurrentExercise({
+      ...exercise,
+      id: undefined // Retirer l'ID pour en créer un nouveau lors de la sauvegarde
     });
+  };
 
-    const jsonString = prettify 
-      ? JSON.stringify(dataToExport, null, 2)
-      : JSON.stringify(dataToExport);
+  const deleteExercise = (id) => {
+    setExercises(exercises.filter(ex => ex.id !== id));
+  };
+
+  const duplicateExercise = (id) => {
+    const exerciseToDuplicate = exercises.find(ex => ex.id === id);
+    if (exerciseToDuplicate) {
+      const duplicated = {
+        ...exerciseToDuplicate,
+        id: Date.now(),
+        title: `${exerciseToDuplicate.title} (copie)`
+      };
+      setExercises([...exercises, duplicated]);
+    }
+  };
+
+  const exportExercises = (includeAnswers = true, prettify = true, mode = 'multiple') => {
+    if (exercises.length === 0) {
+      alert('⚠️ Aucun exercice à exporter');
+      return;
+    }
+
+    if (mode === 'multiple') {
+      exportToJSON(exercises, includeAnswers, prettify);
+      alert(`📥 Export de ${exercises.length} fichier(s) lancé !`);
+    } else {
+      const version = includeAnswers ? 'prof' : 'eleve';
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `exercices_${version}_${timestamp}.json`;
+      exportAllInOne(exercises, filename, includeAnswers, prettify);
+      alert(`📥 Exercices exportés dans ${filename}`);
+    }
+  };
+
+  const importExercises = async (file) => {
+    try {
+      const imported = await importFromJSON(file);
       
-    const dataBlob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    
-    const filename = includeAnswers 
-      ? 'exercices-avec-corrections.json'
-      : 'exercices-eleves.json';
-    
-    link.download = filename;
-    link.click();
-    
-    alert(`📥 Exercices exportés ${includeAnswers ? 'avec' : 'sans'} les réponses !`);
+      const hasAnswers = imported.some(ex => 
+        ex.elements?.some(el => 
+          (el.type === 'equation' && el.content?.correctAnswer) ||
+          (el.type === 'question' && el.content?.answer) ||
+          (el.type === 'mcq' && el.content?.correctAnswers)
+        )
+      );
+      
+      setExercises(prev => [...prev, ...imported]);
+      
+      alert(`✅ ${imported.length} exercice(s) importé(s) ${hasAnswers ? 'avec' : 'sans'} corrections !`);
+    } catch (error) {
+      alert('❌ Erreur lors de l\'import : ' + error.message);
+    }
   };
 
-  const importJSON = (file) => {
-    const reader = new FileReader();
-    
-    reader.onload = (e) => {
-      try {
-        const imported = JSON.parse(e.target.result);
-        
-        // Validation basique
-        if (!Array.isArray(imported)) {
-          throw new Error('Format invalide');
-        }
-        
-        // Vérifier si les exercices ont des réponses
-        const hasAnswers = imported.some(ex => 
-          ex.elements?.some(el => 
-            (el.type === 'question' && el.content?.answer) ||
-            (el.type === 'mcq' && el.content?.options?.some(o => o.correct))
-          )
-        );
-        
-        setExercises(imported);
-        
-        alert(`✅ ${imported.length} exercice(s) importé(s) ${hasAnswers ? 'avec' : 'sans'} corrections !`);
-      } catch (error) {
-        alert('❌ Erreur lors de l\'import : ' + error.message);
-      }
-    };
-    
-    reader.readAsText(file);
-  };
 
   return {
     exercises,
@@ -146,8 +152,14 @@ export const useExercises = () => {
     addElement,
     updateElement,
     deleteElement,
+    moveElement,
     saveExercise,
-    exportJSON,
-    importJSON
+    loadExercise,
+    deleteExercise,
+    duplicateExercise,
+    exportExercises,
+    importExercises,
+    exportJSON: exportExercises,
+    importJSON: importExercises,
   };
 };
