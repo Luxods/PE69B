@@ -5,3 +5,12 @@ FunctionEditor.jsx	-> Permet de créer ou modifier une fonction mathématique.
 EquationEditor.jsx	-> Permet de saisir ou modifier une équation.
 TextEditor.jsx	-> Permet de saisir ou modifier du texte enrichi.
 GraphEditor.jsx	-> Permet de configurer un graphique (bornes, expression, options).*/
+
+
+
+
+/*
+Résoudre calculs en Latex, 
+Boutons indication pour l'élève, 
+
+*/

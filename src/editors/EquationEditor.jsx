@@ -1,37 +1,35 @@
 import React from 'react';
-import { Info } from 'lucide-react';
+import { Info, AlertTriangle } from 'lucide-react';
 
 const EquationEditor = ({ content, onUpdate }) => {
-  // Initialiser le contenu s'il n'existe pas
   const safeContent = content || {
     type: 'simple',
     latex: '',
-    showSteps: false,
-    showSolution: false,
     requireAnswer: false,
     answerType: 'expression',
     correctAnswer: '',
-    answerHint: ''
+    answerHint: '',
+    // Options pour équations du second degré
+    isQuadratic: false,
+    requirePositiveDiscriminant: false,
+    discriminantVariables: { a: 'a', b: 'b', c: 'c' }
   };
 
-  // Fonction pour changer le type et nettoyer les champs inutiles
   const handleTypeChange = (newType) => {
     let newContent = {
       type: newType,
-      showSteps: safeContent.showSteps || false,
       showSolution: safeContent.showSolution || false,
       requireAnswer: safeContent.requireAnswer || false,
       answerType: safeContent.answerType || 'expression',
       correctAnswer: safeContent.correctAnswer || '',
-      answerHint: safeContent.answerHint || ''
+      answerHint: safeContent.answerHint || '',
+      isQuadratic: safeContent.isQuadratic || false,
+      requirePositiveDiscriminant: safeContent.requirePositiveDiscriminant || false,
+      discriminantVariables: safeContent.discriminantVariables || { a: 'a', b: 'b', c: 'c' }
     };
 
     if (safeContent.solution) {
       newContent.solution = safeContent.solution;
-    }
-
-    if (safeContent.steps) {
-      newContent.steps = safeContent.steps;
     }
 
     if (newType === 'system') {
@@ -47,20 +45,9 @@ const EquationEditor = ({ content, onUpdate }) => {
     onUpdate({ ...safeContent, [field]: value });
   };
 
-  const addStep = () => {
-    const steps = safeContent.steps || [];
-    updateContent('steps', [...steps, '']);
-  };
-
-  const updateStep = (index, value) => {
-    const steps = [...(safeContent.steps || [])];
-    steps[index] = value;
-    updateContent('steps', steps);
-  };
-
-  const removeStep = (index) => {
-    const steps = (safeContent.steps || []).filter((_, i) => i !== index);
-    updateContent('steps', steps);
+  const updateDiscriminantVariable = (coef, varName) => {
+    const newVars = { ...safeContent.discriminantVariables, [coef]: varName };
+    updateContent('discriminantVariables', newVars);
   };
 
   return (
@@ -96,27 +83,104 @@ const EquationEditor = ({ content, onUpdate }) => {
           </p>
         </div>
       ) : (
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Équation (format LaTeX)
-          </label>
-          <input 
-            type="text"
-            className="w-full p-2 border rounded font-mono"
-            value={safeContent.latex || ''}
-            onChange={(e) => updateContent('latex', e.target.value)}
-            placeholder="Ex: {a}x^2 + {b}x + {c} = 0"
-          />
-          <p className="text-xs text-gray-600 mt-1">
-            Utilisez {`{variable}`} pour les valeurs dynamiques
-          </p>
-        </div>
+        <>
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Équation (format LaTeX)
+            </label>
+            <input 
+              type="text"
+              className="w-full p-2 border rounded font-mono"
+              value={safeContent.latex || ''}
+              onChange={(e) => updateContent('latex', e.target.value)}
+              placeholder="Ex: {a}x^2 + {b}x + {c} = 0"
+            />
+            <p className="text-xs text-gray-600 mt-1">
+              Utilisez {`{variable}`} pour les valeurs dynamiques
+            </p>
+          </div>
+
+          {/* Options pour équation du second degré */}
+          <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+            <label className="flex items-center gap-2 mb-3">
+              <input
+                type="checkbox"
+                checked={safeContent.isQuadratic || false}
+                onChange={(e) => updateContent('isQuadratic', e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-sm font-medium text-purple-900">
+                Équation du second degré (ax² + bx + c = 0)
+              </span>
+            </label>
+
+            {safeContent.isQuadratic && (
+              <div className="space-y-3 pl-6">
+                {/* Contrainte discriminant */}
+                <label className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    checked={safeContent.requirePositiveDiscriminant || false}
+                    onChange={(e) => updateContent('requirePositiveDiscriminant', e.target.checked)}
+                    className="mt-0.5 rounded"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-purple-800">
+                      Forcer Δ {'>='} 0 (deux solutions réelles)
+                    </span>
+                    <p className="text-xs text-purple-600 mt-0.5">
+                      Les variables seront régénérées jusqu'à obtenir b² - 4ac {'>='} 0
+                    </p>
+                  </div>
+                </label>
+
+                {/* Configuration des variables */}
+                {safeContent.requirePositiveDiscriminant && (
+                  <div className="p-3 bg-purple-100 rounded">
+                    <p className="text-xs font-medium text-purple-800 mb-2">
+                      Noms des variables pour a, b et c :
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        className="px-2 py-1 text-sm border border-purple-300 rounded bg-white"
+                        value={safeContent.discriminantVariables?.a || 'a'}
+                        onChange={(e) => updateDiscriminantVariable('a', e.target.value)}
+                        placeholder="Variable a"
+                      />
+                      <input
+                        type="text"
+                        className="px-2 py-1 text-sm border border-purple-300 rounded bg-white"
+                        value={safeContent.discriminantVariables?.b || 'b'}
+                        onChange={(e) => updateDiscriminantVariable('b', e.target.value)}
+                        placeholder="Variable b"
+                      />
+                      <input
+                        type="text"
+                        className="px-2 py-1 text-sm border border-purple-300 rounded bg-white"
+                        value={safeContent.discriminantVariables?.c || 'c'}
+                        onChange={(e) => updateDiscriminantVariable('c', e.target.value)}
+                        placeholder="Variable c"
+                      />
+                    </div>
+                    <div className="mt-2 flex items-start gap-1">
+                      <AlertTriangle size={12} className="text-purple-700 mt-0.5" />
+                      <p className="text-xs text-purple-700">
+                        Assurez-vous que ces variables existent avec des plages appropriées
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </>
       )}
 
       {/* Champ de réponse */}
-      <div className="space-y-3 p-3 bg-blue-50 rounded-lg">
+      <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-blue-900">Champ de réponse</h4>
+          <h4 className="text-sm font-medium text-blue-900">Réponse attendue</h4>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -124,123 +188,72 @@ const EquationEditor = ({ content, onUpdate }) => {
               onChange={(e) => updateContent('requireAnswer', e.target.checked)}
               className="rounded"
             />
-            <span className="text-sm">Activer le champ de réponse</span>
+            <span className="text-sm">Demander une réponse</span>
           </label>
         </div>
 
         {safeContent.requireAnswer && (
           <div className="space-y-3">
-            <div>
-              <label className="block text-sm font-medium text-blue-900 mb-1">
-                Type de réponse attendu
-              </label>
-              <select
-                className="w-full p-2 border border-blue-200 rounded bg-white"
-                value={safeContent.answerType || 'expression'}
-                onChange={(e) => updateContent('answerType', e.target.value)}
-              >
-                <option value="number">Nombre</option>
-                <option value="expression">Expression mathématique</option>
-                <option value="set">Ensemble de solutions</option>
-                <option value="interval">Intervalle</option>
-                <option value="vector">Vecteur/Coordonnées</option>
-              </select>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-blue-900 mb-1">
+                  Type de réponse
+                </label>
+                <select
+                  className="w-full p-2 border border-blue-300 rounded bg-white text-sm"
+                  value={safeContent.answerType || 'expression'}
+                  onChange={(e) => updateContent('answerType', e.target.value)}
+                >
+                  <option value="number">Nombre</option>
+                  <option value="expression">Expression</option>
+                  <option value="set">Ensemble</option>
+                  <option value="interval">Intervalle</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-blue-900 mb-1">
+                  Indication
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border border-blue-300 rounded text-sm"
+                  value={safeContent.answerHint || ''}
+                  onChange={(e) => updateContent('answerHint', e.target.value)}
+                  placeholder="Ex: 2 décimales"
+                />
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-blue-900 mb-1">
-                Réponse correcte (LaTeX)
+              <label className="block text-xs font-medium text-blue-900 mb-1">
+                Réponse correcte (avec variables {`{}`})
               </label>
               <input
                 type="text"
-                className="w-full p-2 border border-blue-200 rounded font-mono"
+                className="w-full p-2 border border-blue-300 rounded font-mono text-sm"
                 value={safeContent.correctAnswer || ''}
                 onChange={(e) => updateContent('correctAnswer', e.target.value)}
                 placeholder={
-                  safeContent.answerType === 'number' ? 'Ex: 42 ou {result}' :
-                  safeContent.answerType === 'set' ? 'Ex: \\{-2, 3\\}' :
-                  safeContent.answerType === 'interval' ? 'Ex: [-1, 5[' :
-                  safeContent.answerType === 'vector' ? 'Ex: (2, -3)' :
-                  'Ex: x = 2 ou x = \\frac{-b}{2a}'
+                  safeContent.answerType === 'number' ? 'Ex: {result}' :
+                  safeContent.answerType === 'set' ? 
+                    (safeContent.isQuadratic ? 
+                      'Ex: {x1}, {x2} ou \\{\\frac{-{b}-\\sqrt{\\Delta}}{2{a}}, \\frac{-{b}+\\sqrt{\\Delta}}{2{a}}\\}' : 
+                      'Ex: \\{-2, 3\\}') :
+                  safeContent.answerType === 'interval' ? 'Ex: ]-∞, {x1}] ∪ [{x2}, +∞[' :
+                  'Ex: x = \\frac{-{b}}{2{a}}'
                 }
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-blue-900 mb-1">
-                Indication (optionnel)
-              </label>
-              <input
-                type="text"
-                className="w-full p-2 border border-blue-200 rounded"
-                value={safeContent.answerHint || ''}
-                onChange={(e) => updateContent('answerHint', e.target.value)}
-                placeholder="Ex: Donner la valeur exacte, Arrondir à 10^-2 près..."
-              />
-            </div>
-
-            <div className="flex items-start gap-2 p-2 bg-blue-100 rounded">
-              <Info size={16} className="text-blue-700 mt-0.5" />
-              <div className="text-xs text-blue-700">
-                La réponse peut contenir des variables dynamiques avec {`{variable}`}.
-                Le système vérifiera automatiquement la réponse de l'élève.
-              </div>
+              {safeContent.isQuadratic && safeContent.requirePositiveDiscriminant && (
+                <p className="text-xs text-purple-600 mt-1">
+                  💡 Vous pouvez utiliser {`{x1}`} et {`{x2}`} pour les solutions calculées automatiquement
+                </p>
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* Étapes */}
-      {safeContent.showSteps && (
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Étapes personnalisées (optionnel)
-          </label>
-          <div className="space-y-2">
-            {(safeContent.steps || []).map((step, index) => (
-              <div key={index} className="flex gap-2">
-                <input
-                  type="text"
-                  className="flex-1 p-2 border rounded text-sm"
-                  value={step}
-                  onChange={(e) => updateStep(index, e.target.value)}
-                  placeholder={`Étape ${index + 1} (peut contenir du LaTeX)`}
-                />
-                <button
-                  onClick={() => removeStep(index)}
-                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                  type="button"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-            <button
-              onClick={addStep}
-              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-              type="button"
-            >
-              + Ajouter une étape
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Solution */}
-      {safeContent.showSolution && (
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Solution complète (format LaTeX)
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border rounded font-mono"
-            value={safeContent.solution || ''}
-            onChange={(e) => updateContent('solution', e.target.value)}
-            placeholder="Ex: x = \\frac{-{b} \\pm \\sqrt{{b}^2 - 4{a}{c}}}{2{a}}"
-          />
-        </div>
-      )}
     </div>
   );
 };

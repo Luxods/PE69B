@@ -1,4 +1,5 @@
 {
+  "homepage": "https://luxods.github.io/NovLearn_Exercice-Builder/",
   "dependencies": {
     "file-saver": "^2.0.5",
     "katex": "^0.16.25",
